@@ -120,7 +120,12 @@ def auth():
     if 'localhost' in flow.redirect_uri:
         flow.redirect_uri = url_for('auth', _scheme='http', _external=True)
 
-    authorization_response = request.url
+    url = request.url
+    if 'localhost' not in flow.redirect_uri:
+        if request.url.startswith('http://'):
+            url = request.url.replace('http://', 'https://', 1)
+
+    authorization_response = url
     flow.fetch_token(authorization_response=authorization_response)
 
     # Store the credentials in the session.
