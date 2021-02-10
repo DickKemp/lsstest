@@ -42,18 +42,6 @@ def sessio21():
 def test_flow():
     print('starting in /test')
 
-    if 'secrets' not in session:
-        print('secrets NOT in session')
-        client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
-
-        if client_config_str:
-            print(f'found client_config_str: {client_config_str}')
-            client_config = json.loads(client_config_str)
-            
-            if client_config:
-                print(f'set session["secrets"]')
-                session['secrets'] = client_config
-
     if 'credentials' not in session:
         print('credentials not found in session')
         return redirect('doauth')
@@ -86,8 +74,10 @@ def catch_all(path):
 def doauth():
     print('in /doauth')
 
-    if 'secrets' in session:
-        flow = Flow.from_client_config(**session['secrets'], scopes=SCOPES)
+    client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
+    if client_config_str:
+        client_config = json.loads(client_config_str)
+        flow = Flow.from_client_config(client_config, scopes=SCOPES)
     else:
         # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
         flow = Flow.from_client_secrets_file(CLIENT_SECRET_FILE, scopes=SCOPES)
