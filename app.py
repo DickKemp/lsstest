@@ -77,7 +77,7 @@ def doauth():
     client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
     if client_config_str:
         client_config = json.loads(client_config_str)
-        flow = Flow.from_client_config(client_config, scopes=SCOPES)
+        flow = Flow.from_client_config(client_config=client_config, scopes=SCOPES)
     else:
         # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
         flow = Flow.from_client_secrets_file(CLIENT_SECRET_FILE, scopes=SCOPES)
@@ -112,7 +112,7 @@ def auth():
     client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
     if client_config_str:
         client_config = json.loads(client_config_str)
-        flow = Flow.from_client_config(client_config, scopes=SCOPES, state=state)
+        flow = Flow.from_client_config(client_config=client_config, scopes=SCOPES, state=state)
     else:
         flow = Flow.from_client_secrets_file(CLIENT_SECRET_FILE, scopes= SCOPES, state=state)
     
