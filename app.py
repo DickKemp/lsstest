@@ -18,18 +18,46 @@ CLIENT_SECRET=None
 def heartbeat():
     return jsonify({"status": "healthy"})
 
+@app.route("/session1")
+def session1():
+    html = "<h3>session keys & values</h3>"
+    x = session
+    for key in session:
+        print(f"session key: {key} - value: {str(session[key])}")
+        html = html + f"session key: {key} - value: {str(session[key])} <br>"
+    return html
+
+@app.route("/session2")
+def sessio21():
+    html = "<h3>session2</h3>"
+    if 'rich' not in session:
+        session['rich'] = "kempinski"
+        html = html + f"setting session['rich']: to kempinski"
+    else:
+        html = html + f"got session['rich']: {session['rich']}<br>"
+    return html
+
+
 @app.route("/test")
 def test_flow():
+    print('starting in /test')
+
     if 'secrets' not in session:
+        print('secrets NOT in session')
         client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
+
         if client_config_str:
+            print(f'found client_config_str: {client_config_str}')
             client_config = json.loads(client_config_str)
+            
             if client_config:
+                print(f'set session["secrets"]')
                 session['secrets'] = client_config
 
-    print('starting in /test')
     if 'credentials' not in session:
+        print('credentials not found in session')
         return redirect('doauth')
+
     html = '<h3>albums</h3>'
     print('in /test - got credentials')
     # Load credentials from the session.
