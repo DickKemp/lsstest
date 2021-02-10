@@ -86,8 +86,8 @@ def doauth():
     # for the OAuth 2.0 client, which you configured in the API Console. If this
     # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
     # error.
-    flow.redirect_url = url_for('auth', _scheme='https', _external=True)
-    if 'localhost' in flow.redirect_url:
+    flow.redirect_uri = url_for('auth', _scheme='https', _external=True)
+    if 'localhost' in flow.redirect_uri:
         flow.redirect_uri = url_for('auth', _scheme='http', _external=True)
     
     authorization_url, state = flow.authorization_url(
@@ -114,8 +114,8 @@ def auth():
     else:
         flow = Flow.from_client_secrets_file(CLIENT_SECRET_FILE, scopes= SCOPES, state=state)
     
-    flow.redirect_url = url_for('auth', _scheme='https', _external=True)
-    if 'localhost' in flow.redirect_url:
+    flow.redirect_uri = url_for('auth', _scheme='https', _external=True)
+    if 'localhost' in flow.redirect_uri:
         flow.redirect_uri = url_for('auth', _scheme='http', _external=True)
 
     authorization_response = request.url
