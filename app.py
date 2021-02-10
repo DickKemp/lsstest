@@ -109,8 +109,10 @@ def auth():
     # verified in the authorization server response.
     state = session['state']
 
-    if 'secrets' in session:
-        flow = Flow.from_client_config(**session['secrets'], scopes=SCOPES, state=state)
+    client_config_str = os.getenv('GOOGLE_CLIENT_SECRETS', None)
+    if client_config_str:
+        client_config = json.loads(client_config_str)
+        flow = Flow.from_client_config(client_config, scopes=SCOPES, state=state)
     else:
         flow = Flow.from_client_secrets_file(CLIENT_SECRET_FILE, scopes= SCOPES, state=state)
     
