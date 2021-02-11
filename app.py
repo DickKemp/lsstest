@@ -4,6 +4,7 @@ from google_auth_oauthlib.flow import Flow
 import google.oauth2.credentials
 from googleapiclient.discovery import build
 import json
+import requests
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'asdfk;;alksjf;skjf;alskjdf;sjdxxxk'
@@ -142,7 +143,30 @@ def auth():
         'scopes': credentials.scopes}
     return redirect(url_for('test_flow'))
 
-     
+@app.route('/logout')
+@app.route('/revoke')
+def revoke():
+    if 'credentials' not in session:
+        return ('You need to <a href="/authorize">authorize</a> before ' +
+                'testing the code to revoke credentials.')
+
+    credentials = google.oauth2.credentials.Credentials( **session['credentials'])
+
+    revoke = requests.post('https://oauth2.googleapis.com/revoke',
+        params={'token': credentials.token},
+        headers = {'content-type': 'application/x-www-form-urlencoded'})
+    
+    if 'credentials' in session:
+        del session['credentials']
+    if 'state' in session:
+        del session['state']
+
+    status_code = getattr(revoke, 'status_code')
+    if status_code == 200:
+        return('Credentials successfully revoked.')
+    else:
+        return('An error occurred.')
+
 if __name__ == '__main__':
   # When running locally, disable OAuthlib's HTTPs verification.
   # ACTION ITEM for developers:
