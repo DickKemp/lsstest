@@ -51,7 +51,7 @@ def test_flow():
     print('in /test - got credentials')
     # Load credentials from the session.
     credentials = google.oauth2.credentials.Credentials(**session['credentials'])
-    service = build(API_NAME, API_VERSION, credentials=credentials)
+    service = build(API_NAME, API_VERSION, credentials=credentials,static_discovery=False)
     myAblums = service.albums().list().execute()
     myAblums_list = myAblums.get('albums')
     for alb in myAblums_list:
