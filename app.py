@@ -56,7 +56,7 @@ def test_flow():
     myAblums_list = myAblums.get('albums')
     for alb in myAblums_list:
         html = html + f"<h3>{alb['title']}</h3>"
-    img_html='<h3>photo</h3>'
+    img_html='<h3>this is my list of photos</h3>'
     media_items = service.mediaItems().search(body={'filters': {'dateFilter': {'dates':[{'year':2020, 'month':12, 'day':25}]}}}).execute()['mediaItems']
     for mi in media_items:
         image_url = mi['baseUrl'] + '=w100-h100'
@@ -65,7 +65,7 @@ def test_flow():
     return img_html
     # return f'<p>{media_items}</p>'
     # return html
-
+s
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
