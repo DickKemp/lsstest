@@ -65,7 +65,7 @@ def test_flow():
     return img_html
     # return f'<p>{media_items}</p>'
     # return html
-s
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
