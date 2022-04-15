@@ -66,6 +66,72 @@ def test_flow():
     # return f'<p>{media_items}</p>'
     # return html
 
+
+@app.route("/photos/albums")
+def get_albums():
+
+    if 'credentials' not in session:
+        print('credentials not found in session')
+        return redirect('doauth')
+
+    html = '<h3>albums</h3>'
+
+    # Load credentials from the session.
+    credentials = google.oauth2.credentials.Credentials(**session['credentials'])
+    service = build(API_NAME, API_VERSION, credentials=credentials,static_discovery=False)
+    
+    myAblums = service.albums().list().execute()
+    myAblums_list = myAblums.get('albums')
+    for alb in myAblums_list:
+        html = html + f"<h3>{alb['id']} - {alb['title']} - {alb['mediaItemsCount']}</h3>"
+
+    """
+    img_html='<h3>this is my list of photos</h3>'
+    media_items = service.mediaItems().search(body={'filters': {'dateFilter': {'dates':[{'year':2020, 'month':12, 'day':25}]}}}).execute()['mediaItems']
+    for mi in media_items:
+        image_url = mi['baseUrl'] + '=w100-h100'
+        img_html = img_html + f'<img src={image_url}></img><br>'
+    """
+    
+    return html
+
+
+@app.route("/photos/albums/<albumId>")
+def get_albums_list(albumId):
+
+    if 'credentials' not in session:
+        print('credentials not found in session')
+        return redirect('doauth')
+
+    html = '<h3>albums</h3>'
+
+    # Load credentials from the session.
+    credentials = google.oauth2.credentials.Credentials(**session['credentials'])
+    service = build(API_NAME, API_VERSION, credentials=credentials,static_discovery=False)
+    
+    items = []
+    
+    resp = service.mediaItems().search(body={'albumId': albumId}).execute()
+    
+    next_page_token = resp.get('nextPageToken', None)
+    media_items = resp['mediaItems']
+    html = get_media_items(media_items, html)
+    
+    while next_page_token is not None:
+        resp = service.mediaItems().search(body={'albumId': albumId, 
+                                                'pageToken': next_page_token}).execute()
+
+        next_page_token = resp.get('nextPageToken', None)
+        media_items = resp['mediaItems']
+        html = get_media_items(media_items, html)
+    
+    return html
+
+def get_media_items(items, html):
+    for mi in items:
+        html = f"{html}<br>{mi['id']}"
+    return html
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
