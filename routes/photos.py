@@ -13,7 +13,7 @@ def get_albums():
 
     credentials = get_credentials()
     if not credentials:
-        return redirect('http://localhost:8080/doauth')
+        return redirect(url_for('doauth'))
 
     api = photos_api.PhotosApi()
     result_list = api.get_albums(credentials)
@@ -28,7 +28,7 @@ def get_photo(photo_id):
     credentials = get_credentials()
     if not credentials:
         #return redirect('/doauth')
-        return redirect('http://localhost:8080/doauth')
+        return redirect(url_for('doauth'))
     api = photos_api.PhotosApi()
     resp = api.get_photo(photo_id, credentials)
     html = ""
@@ -52,7 +52,7 @@ def get_albums_list(album_id):
     credentials = get_credentials()
     if not credentials:
         #return redirect('/doauth')
-        return redirect('http://localhost:8080/doauth')
+        return redirect(url_for('doauth'))
     next_page = None
     first_page = True
     api = photos_api.PhotosApi()
